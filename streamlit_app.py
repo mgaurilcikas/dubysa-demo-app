@@ -543,8 +543,6 @@ if page == "Duomenų įvestis":
             filters_dict['Ugdoma kompetencija'] = cur_data['Ugdoma kompetencija'].values[0]
             filters_dict['Pasiekimas'] = cur_data['Pasiekimas'].values[0]
 
-
-
         logger.info(f"Updated filters:  {filters_dict}")
         bup_data3 = filter_data(get_bup_achievements(BUP_ACHIEVEMENTS_BY_SUBJECT_PATH), filters_dict)
         bup_data1 = filter_data(get_bup_competencies(BUP_COMPETENCIES_PATH), filters_dict)
@@ -636,6 +634,7 @@ if page == "Duomenų įvestis":
                 bup_df = filter_data(get_bup_achievements(BUP_ACHIEVEMENTS_BY_SUBJECT_PATH), filters_dict)
                 cur_df = filter_data(get_curriculum(HISTORY_CURRICULUM_PATH), filters_dict)
 
+
                 args_df = {
                     "Pamokos plano struktura": lesson_plan_structure_data,
                     "Teminis planas": cur_df,
@@ -646,9 +645,9 @@ if page == "Duomenų įvestis":
                 lesson_plan_state = True
 
                 with st.expander("🔍 Peržiūrėti pamokos plana", expanded=False):
-                    st.subheader("PP input")
-                    st.json(args_df)
-                    st.subheader("PP")
+                    # st.subheader("PP input")
+                    # st.json(args_df)
+                    # st.subheader("PP")
                     st.markdown(st.session_state.pp_str)
 
                 st.session_state.lesson_plan_generated = True
@@ -664,18 +663,17 @@ if page == "Duomenų įvestis":
 
 
 elif page == "Pamokos planas":
-    st.title("📖 Pamokos planas")
 
     if st.session_state.pp_str:
 
         with st.expander("🔍 Įeities duomenys ", expanded=False):
-            None
-            # st.dataframe(lesson_plan_structure_data, use_container_width=True)
+
+            st.markdown(f"Promt: {lesson_plan_promt}", unsafe_allow_html=True)
+            # st.markdown(st.session_state.lesson_task, use_container_width=True)
 
         st.title("📖 **Pamokos Planas**")
         st.markdown(st.session_state.pp_str)
         st.markdown("---")
-        st.title("📖 **Pamokos plano įeities duomenys**")
 
 
     else:
