@@ -1,0 +1,1022 @@
+{
+  "curriculum": {
+    "title": "Istorijos mokymo programa (5 klasė)",
+    "totalWeeks": 36,
+    "totalLessons": 72,
+    "contentAreas": [
+      {
+        "name": "Praeitis, dabartis ir istorijos mokslas",
+        "chapters": [
+          {
+            "name": "1. Įvadas",
+            "lessons": [
+              {
+                "week": 1,
+                "theme": "Įvadas į 5 klasės istorijos kursą ",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "D1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 1,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 0,
+              "weekRange": {
+                "start": 1,
+                "end": 1
+              }
+            }
+          },
+          {
+            "name": "2. Kaip išmatuoti laiką?",
+            "lessons": [
+              {
+                "week": 1,
+                "theme": "Kodėl ir kaip žmonės seka laiką?",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "B1",
+                "competencies": "Komunikavimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              },
+              {
+                "week": 2,
+                "theme": "Pirmieji laikrodžiai ir kalendoriai: kaip reikėjo gyventi be laikrodžių ir kalendorių? Metų skaičiavimo sistemos ir metai prieš ir po Kristaus",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "B1",
+                "competencies": "Kūrybiškumo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 2,
+              "totalOptionalHours": 0,
+              "weekRange": {
+                "start": 1,
+                "end": 2
+              }
+            }
+          },
+          {
+            "name": "3. Kaip mes žinome, kas vyko praeityje?",
+            "lessons": [
+              {
+                "week": 3,
+                "theme": "Istorijos šaltiniai ir jų rūšys",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "A1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              },
+              {
+                "week": 4,
+                "theme": "Kaip archeologai tiria praeitį? Archeologija – praeities mokslas",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "A1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 2,
+              "totalOptionalHours": 0,
+              "weekRange": {
+                "start": 3,
+                "end": 4
+              }
+            }
+          },
+          {
+            "name": "4. Žemės rutulio tyrinėjimas",
+            "lessons": [
+              {
+                "week": 5,
+                "theme": "Kaip žmonės susipažino su pasauliu? Didžiosios geografinės atrastos",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Komunikavimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              },
+              {
+                "week": 6,
+                "theme": "Kolumbas ir Amerikos atraskimas. Vaskas da Gama ir jūrų kelio į Indiją atraskimas",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Komunikavimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 2,
+              "totalOptionalHours": 0,
+              "weekRange": {
+                "start": 5,
+                "end": 6
+              }
+            }
+          },
+          {
+            "name": "5. Didžiųjų civilizacijų paliktis",
+            "lessons": [
+              {
+                "week": 7,
+                "theme": "Senovės civilizacijos: Mesopotamija, Egiptas",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              },
+              {
+                "week": 8,
+                "theme": "Senovės Graikijos kultūros paveldas",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              },
+              {
+                "week": 9,
+                "theme": "Senovės Romos kultūros paveldas",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              },
+              {
+                "week": 10,
+                "theme": "Krikščionybės atsiradimas ir plitimas",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 4,
+              "totalMandatoryHours": 4,
+              "totalOptionalHours": 0,
+              "weekRange": {
+                "start": 7,
+                "end": 10
+              }
+            }
+          },
+          {
+            "name": "6. Viduramžių pasaulis",
+            "lessons": [
+              {
+                "week": 11,
+                "theme": "Viduramžių Vakarų Europos gyvenimas",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              },
+              {
+                "week": 12,
+                "theme": "Viduramžių miestų gyvenimas",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              },
+              {
+                "week": 13,
+                "theme": "Kryžiaus žygiai",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Komunikavimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 3,
+              "totalMandatoryHours": 3,
+              "totalOptionalHours": 0,
+              "weekRange": {
+                "start": 11,
+                "end": 13
+              }
+            }
+          },
+          {
+            "name": "7. Naujųjų laikų pradžia",
+            "lessons": [
+              {
+                "week": 14,
+                "theme": "Renesansas",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Kultūros suvokimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              },
+              {
+                "week": 15,
+                "theme": "Reformacija",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 2,
+              "totalOptionalHours": 0,
+              "weekRange": {
+                "start": 14,
+                "end": 15
+              }
+            }
+          },
+          {
+            "name": "8. Technikos vystymosi istorija",
+            "lessons": [
+              {
+                "week": 16,
+                "theme": "Technikos istorija: nuo paprasčiausių įrankių iki kompiuterių",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 1,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 0,
+              "weekRange": {
+                "start": 16,
+                "end": 16
+              }
+            }
+          },
+          {
+            "name": "9. Mokslo istorija",
+            "lessons": [
+              {
+                "week": 17,
+                "theme": "Mokslo raida: nuo senovės iki šių dienų",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 1,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 0,
+              "weekRange": {
+                "start": 17,
+                "end": 17
+              }
+            }
+          },
+          {
+            "name": "10. Gyvenimo būdo kaita",
+            "lessons": [
+              {
+                "week": 18,
+                "theme": "Kaip keitėsi žmonių gyvenimo būdas per amžius",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 1,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 0,
+              "weekRange": {
+                "start": 18,
+                "end": 18
+              }
+            }
+          },
+          {
+            "name": "Projektinis darbas",
+            "lessons": [
+              {
+                "week": 19,
+                "theme": "Projektinis darbas. Tyrimų metodai, šaltinių paieška, analizė. Prezentacija.",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 20,
+                "theme": "Projektinis darbas. Tyrimų metodai, šaltinių paieška, analizė. Prezentacija.",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 21,
+                "theme": "Projektinis darbas. Tyrimų metodai, šaltinių paieška, analizė. Prezentacija.",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 22,
+                "theme": "Projektinis darbas. Tyrimų metodai, šaltinių paieška, analizė. Prezentacija.",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 23,
+                "theme": "Projektinis darbas. Tyrimų metodai, šaltinių paieška, analizė. Prezentacija.",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 24,
+                "theme": "Projektinis darbas. Tyrimų metodai, šaltinių paieška, analizė. Prezentacija.",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              }
+            ],
+            "summary": {
+              "totalLessons": 6,
+              "totalMandatoryHours": 0,
+              "totalOptionalHours": 6,
+              "weekRange": {
+                "start": 19,
+                "end": 24
+              }
+            }
+          }
+        ],
+        "summary": {
+          "totalChapters": 11,
+          "totalLessons": 30,
+          "totalMandatoryHours": 24,
+          "totalOptionalHours": 6
+        }
+      },
+      {
+        "name": "Integruoto ugdymo veiklų savaitė.",
+        "chapters": [
+          {
+            "name": "Integruoto ugdymo veiklų savaitė",
+            "lessons": [
+              {
+                "week": 25,
+                "theme": "Integruoto ugdymo veiklų savaitė",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": "Integracija su lietuvių kalba, gamtos mokslais, menu, technologijomis",
+                "notes": "Pasirenkamosios valandos"
+              },
+              {
+                "week": 26,
+                "theme": "Integruoto ugdymo veiklų savaitė",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": "Integracija su lietuvių kalba, gamtos mokslais, menu, technologijomis",
+                "notes": "Pasirenkamosios valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 0,
+              "totalOptionalHours": 2,
+              "weekRange": {
+                "start": 25,
+                "end": 26
+              }
+            }
+          }
+        ],
+        "summary": {
+          "totalChapters": 1,
+          "totalLessons": 2,
+          "totalMandatoryHours": 0,
+          "totalOptionalHours": 2
+        }
+      },
+      {
+        "name": "Lietuvos istorijos pradžiamokslis",
+        "chapters": [
+          {
+            "name": "1. Lietuvos praeitis ir dabartis",
+            "lessons": [
+              {
+                "week": 27,
+                "theme": "Lietuvos žemės: gamtinės sąlygos, gyventojai",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 1,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 0,
+              "weekRange": {
+                "start": 27,
+                "end": 27
+              }
+            }
+          },
+          {
+            "name": "2. Pirmieji Lietuvos gyventojai",
+            "lessons": [
+              {
+                "week": 27,
+                "theme": "Pirmieji Lietuvos gyventojai. Akmens amžius Lietuvoje",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos"
+              },
+              {
+                "week": 28,
+                "theme": "Bronzos ir geležies amžius Lietuvoje",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "A1, C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 1,
+              "weekRange": {
+                "start": 27,
+                "end": 28
+              }
+            }
+          },
+          {
+            "name": "3. Baltų gentys ir jų gyvenimas",
+            "lessons": [
+              {
+                "week": 28,
+                "theme": "Baltų gentys ir jų gyvenimas",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos"
+              },
+              {
+                "week": 29,
+                "theme": "Lietuvių tikėjimas, papročiai, kultūra",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Kultūros suvokimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 1,
+              "weekRange": {
+                "start": 28,
+                "end": 29
+              }
+            }
+          },
+          {
+            "name": "4. Lietuvos valstybės susidarymas",
+            "lessons": [
+              {
+                "week": 29,
+                "theme": "Kaip atsirado Lietuvos valstybė? Mindaugas – pirmasis Lietuvos karalius",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "B1, C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos"
+              },
+              {
+                "week": 30,
+                "theme": "Lietuvos didieji kunigaikščiai Gediminas ir Algirdas",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "B1, C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 1,
+              "weekRange": {
+                "start": 29,
+                "end": 30
+              }
+            }
+          },
+          {
+            "name": "5. Lietuvos Didžioji Kunigaikštystė viduramžiais",
+            "lessons": [
+              {
+                "week": 30,
+                "theme": "Vytautas Didysis ir jo valdymo laikmetis",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "B1, C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos"
+              },
+              {
+                "week": 31,
+                "theme": "Žalgirio mūšis",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              },
+              {
+                "week": 31,
+                "theme": "Jogaila ir Lenkijos-Lietuvos unija",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos"
+              },
+              {
+                "week": 32,
+                "theme": "Krikštas Lietuvoje",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Kultūros suvokimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 4,
+              "totalMandatoryHours": 2,
+              "totalOptionalHours": 2,
+              "weekRange": {
+                "start": 30,
+                "end": 32
+              }
+            }
+          },
+          {
+            "name": "6. LDK kultūra ir švietimas",
+            "lessons": [
+              {
+                "week": 32,
+                "theme": "Lietuvos Didžiosios Kunigaikštystės kultūra ir švietimas",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "C1",
+                "competencies": "Kultūros suvokimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos"
+              },
+              {
+                "week": 33,
+                "theme": "Vilnius – Lietuvos sostinė",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 1,
+              "weekRange": {
+                "start": 32,
+                "end": 33
+              }
+            }
+          },
+          {
+            "name": "7. Reformacija ir kontrreformacija LDK",
+            "lessons": [
+              {
+                "week": 33,
+                "theme": "Reformacija ir kontrreformacija Lietuvoje",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "C1",
+                "competencies": "Kultūros suvokimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos"
+              },
+              {
+                "week": 34,
+                "theme": "Lietuvių rašto tradicijų pradžia",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Kultūros suvokimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 1,
+              "weekRange": {
+                "start": 33,
+                "end": 34
+              }
+            }
+          },
+          {
+            "name": "8. Lietuvos žemių praradimas",
+            "lessons": [
+              {
+                "week": 34,
+                "theme": "Livonijos karas ir jo pasekmės Lietuvai",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos"
+              },
+              {
+                "week": 35,
+                "theme": "Mažosios Lietuvos istorija",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "C1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 1,
+              "weekRange": {
+                "start": 34,
+                "end": 35
+              }
+            }
+          },
+          {
+            "name": "9. Lietuvos istorijos šaltiniai ir jų tyrinėjimas",
+            "lessons": [
+              {
+                "week": 35,
+                "theme": "Lietuvos istorijos šaltiniai ir jų tyrinėjimas",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos"
+              },
+              {
+                "week": 36,
+                "theme": "Lietuvos istorijos tyrinėtojai",
+                "hours": {
+                  "mandatory70Percent": 1,
+                  "optional30Percent": 0
+                },
+                "achievements": "D1",
+                "competencies": "Pažinimo",
+                "integration": null,
+                "notes": "Privalomos valandos"
+              }
+            ],
+            "summary": {
+              "totalLessons": 2,
+              "totalMandatoryHours": 1,
+              "totalOptionalHours": 1,
+              "weekRange": {
+                "start": 35,
+                "end": 36
+              }
+            }
+          },
+          {
+            "name": "Projektinis darbas",
+            "lessons": [
+              {
+                "week": 27,
+                "theme": "Projektinis darbas. Šeimos istorija, genealoginis medis, gyvenamosios vietos istorija, vietovardžių kilmė, vietos istorijos paminklai",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 28,
+                "theme": "Projektinis darbas. Šeimos istorija, genealoginis medis, gyvenamosios vietos istorija, vietovardžių kilmė, vietos istorijos paminklai",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 29,
+                "theme": "Projektinis darbas. Šeimos istorija, genealoginis medis, gyvenamosios vietos istorija, vietovardžių kilmė, vietos istorijos paminklai",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 30,
+                "theme": "Projektinis darbas. Šeimos istorija, genealoginis medis, gyvenamosios vietos istorija, vietovardžių kilmė, vietos istorijos paminklai",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 31,
+                "theme": "Projektinis darbas. Šeimos istorija, genealoginis medis, gyvenamosios vietos istorija, vietovardžių kilmė, vietos istorijos paminklai",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 32,
+                "theme": "Projektinis darbas. Šeimos istorija, genealoginis medis, gyvenamosios vietos istorija, vietovardžių kilmė, vietos istorijos paminklai",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 33,
+                "theme": "Projektinis darbas. Šeimos istorija, genealoginis medis, gyvenamosios vietos istorija, vietovardžių kilmė, vietos istorijos paminklai",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 34,
+                "theme": "Projektinis darbas. Šeimos istorija, genealoginis medis, gyvenamosios vietos istorija, vietovardžių kilmė, vietos istorijos paminklai",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 35,
+                "theme": "Projektinis darbas. Šeimos istorija, genealoginis medis, gyvenamosios vietos istorija, vietovardžių kilmė, vietos istorijos paminklai",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              },
+              {
+                "week": 36,
+                "theme": "Projektinis darbas. Šeimos istorija, genealoginis medis, gyvenamosios vietos istorija, vietovardžių kilmė, vietos istorijos paminklai",
+                "hours": {
+                  "mandatory70Percent": 0,
+                  "optional30Percent": 1
+                },
+                "achievements": "A1, B1, C1, D1",
+                "competencies": "Pažinimo, komunikavimo, kūrybiškumo, bendravimo ir bendradarbiavimo",
+                "integration": null,
+                "notes": "Pasirenkamosios valandos. Projektinis darbas gali būti atliekamas visų turinio sričių metu."
+              }
+            ],
+            "summary": {
+              "totalLessons": 10,
+              "totalMandatoryHours": 0,
+              "totalOptionalHours": 10,
+              "weekRange": {
+                "start": 27,
+                "end": 36
+              }
+            }
+          }
+        ],
+        "summary": {
+          "totalChapters": 10,
+          "totalLessons": 38,
+          "totalMandatoryHours": 26,
+          "totalOptionalHours": 12
+        }
+      }
+    ]
+  }
+}

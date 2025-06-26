@@ -1,0 +1,6 @@
+Sukurk mokiniui skirtą mokymosi uždavinį, kuris:
+
+    - remiasi bendrųjų programų 'pasiekimo sritimi' ir 'pasiekimų lygiu',
+    - remiasi teminiame plane nurodyta "Tema" ir "Ugdomais pasiekimais"
+
+Argumentai

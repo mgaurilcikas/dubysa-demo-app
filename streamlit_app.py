@@ -1,6 +1,727 @@
 import streamlit as st
+import json
+import pandas as pd
+import time
+from datetime import datetime
+import logging
+from openai import OpenAI
+from dotenv import load_dotenv
 
-st.title("🎈 My new app")
-st.write(
-    "Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+load_dotenv(dotenv_path=".env")
+client = OpenAI()
+
+# Configure page
+st.set_page_config(
+    page_title="Pamokų planavimo sistema",
+    page_icon="📚",
+    layout="wide"
 )
+
+uzd = {}
+
+input_data_state = False
+teacher_input_state = False
+lesson_task_state = False
+lesson_plan_state = False
+
+
+CLASS_PROFILE_PATH = "data/el_dienynas/class_profile.json"
+HISTORY_CURRICULUM_PATH = "data/teminiai_planai/istorija.csv"
+BUP_COMPETENCIES_PATH = "data/BUP/Istorijos_BUP_kompetenciju_ugdymas.csv"
+BUP_STUDY_CONTENT_PATH = "data/BUP/Istorijos_BUP_mokymosi_turinys.csv"
+BUP_ACHIEVEMENTS_BY_SUBJECT_PATH = "data/BUP/istorijos_BUP_pasiekimai_pagal_sritis.csv"
+ACTIVITIES_PATH = "data/veiklos_strukturos/visos_struktruros.json"
+LESSON_PLAN_STRUCTURE_PATH = "data/pamokos_plano_struktura/PP_struktura.csv"
+
+lesson_task_promt="""Sukurk mokiniui skirtą mokymosi uždavinį, kuris:
+            aprašo, ką turi pasiekti mokinys pamokos pabaigoje ir pagal kokius kriterijus yra vertinama sėkmė,
+            remiasi bendrųjų programų 'pasiekimo sritimi' ir 'pasiekimų lygiu',
+            remiasi teminiame plane nurodyta 'Tema' ir 'Ugdomais pasiekimais'.
+            Pateikt tik rezultatą, be apibendrinumų ir paaiškinimų kaip jis buvo pasiektas"""
+
+lesson_plan_promt = """Sukurk mokiniui skirtą pamokos planą, kuris:
+            griežtai atitinka pamokos plano struktura nurodyta 'pamokos plano struktura',
+            remiasi mokymosi uždaviniu "Mokymosi uždavinys"""
+
+
+#
+# # Initialize session state
+if 'teacher_input_data' not in st.session_state:
+    st.session_state.teacher_input_data = None
+
+if 'lesson_task' not in st.session_state:
+    st.session_state.lesson_task = None
+
+if 'lesson_plan_generated' not in st.session_state:
+    st.session_state.lesson_plan_generated = False
+
+if 'generation_status' not in st.session_state:
+    st.session_state.generation_status = False
+
+if 'bup_data1' not in st.session_state:
+    st.session_state.bup_data1 = None
+
+if 'bup_data2' not in st.session_state:
+    st.session_state.bup_data2 = None
+
+if 'bup_data3' not in st.session_state:
+    st.session_state.bup_data3 = None
+
+if 'curiculum_data' not in st.session_state:
+    st.session_state.curiculum_data = None
+
+if 'activities_data' not in st.session_state:
+    st.session_state.activities_data = None
+
+if 'lesson_plan_structure_data' not in st.session_state:
+    st.session_state.lesson_plan_structure_data = None
+
+if 'tema_data' not in st.session_state:
+    st.session_state.tema_data = None
+
+if 'pp_str' not in st.session_state:
+    st.session_state.pp_str = ""
+
+
+# @st.cache_data
+def get_bup_competencies(file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
+    try:
+        df = pd.read_csv(file_path, encoding=encoding)
+        df.columns = df.columns.str.strip()
+        # Clean text data - remove extra quotes from string columns
+        text_columns = ['Dokumentas','Skyrius','Dalykas', 'Ugdoma kompetencija', 'Sritis', 'Aprasymas']
+        for col in text_columns:
+            if col in df.columns:
+                df[col] = df[col].astype(str).str.strip().str.strip('"')
+
+        # Drop columns that are mostly empty (unnamed columns with mostly NaN)
+        # Keep only columns with meaningful names or significant data
+        cols_to_keep = []
+        for col in df.columns:
+            if not col.startswith('_') and col != '':
+                cols_to_keep.append(col)
+            elif df[col].notna().sum() > 0:  # Keep if has some non-null values
+                cols_to_keep.append(col)
+
+        df = df[cols_to_keep]
+
+        # Rename unnamed columns to more descriptive names if they contain data
+        column_mapping = {}
+        for i, col in enumerate(df.columns):
+            if col.startswith('_') or col == '':
+                if df[col].notna().sum() > 0:
+                    column_mapping[col] = f'Additional_Info_{i}'
+
+        if column_mapping:
+            df = df.rename(columns=column_mapping)
+
+        # Remove rows that are completely empty
+        df = df.dropna(how='all')
+
+        df = df[['Dokumentas', 'Skyrius', 'Dalykas', 'Ugdoma kompetencija', 'Sritis', 'Aprasymas']]
+
+        # Clean up text data further - handle potential encoding issues
+        for col in df.select_dtypes(include=['object']).columns:
+            df[col] = df[col].replace('nan', pd.NA)
+
+        logger.info(f"Successfully loaded curriculum data from {file_path}")
+        logger.info(f"Curriculum data shape: {df.shape}")
+        logger.info(f"Columns: {list(df.columns)}")
+        return df
+
+    except FileNotFoundError:
+        logger.error(f"File not found: {file_path}")
+        raise
+    except UnicodeDecodeError as e:
+        logger.error(f"Encoding error when reading {file_path}: {e}")
+        # Try with different encoding
+        try:
+            logger.info("Trying with 'latin-1' encoding...")
+            return read_csv_to_dataframe(file_path, encoding='latin-1')
+        except:
+            logger.error("Failed with alternative encoding as well")
+            raise
+    except Exception as e:
+        logger.error(f"Error reading CSV file {file_path}: {e}")
+        raise
+
+def get_bup_study_content(file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
+    try:
+        # Read CSV with proper encoding
+        df = pd.read_csv(file_path, encoding=encoding)
+
+        # Clean column names (remove extra whitespace)
+        df.columns = df.columns.str.strip()
+
+        # Expected columns for this curriculum content file
+        expected_columns = ['Dokumentas','Skyrius', 'Dalykas', 'Klasė', 'Tema', 'Nr', 'Sritis-tema', 'Mokymosi turinys']
+
+        # Verify all expected columns are present
+        missing_columns = set(expected_columns) - set(df.columns)
+        if missing_columns:
+            logger.warning(f"Missing expected columns: {missing_columns}")
+
+        # Clean text columns - remove extra quotes and whitespace
+        text_columns = ['Dokumentas','Skyrius', 'Dalykas', 'Tema', 'Nr', 'Sritis-tema', 'Mokymosi turinys']
+        for col in text_columns:
+            if col in df.columns:
+                # Remove outer quotes and extra whitespace
+                df[col] = df[col].astype(str).str.strip().str.strip("'\"").str.strip()
+
+        # Convert Klase (Class) to integer, handling any potential issues
+        if 'Klasė' in df.columns:
+            df['Klasė'] = pd.to_numeric(df['Klasė'], errors='coerce').astype('Int64')
+
+        # Clean and standardize the Nr (Number) column
+        if 'Nr' in df.columns:
+            # Remove trailing dots and spaces, standardize format
+            df['Nr'] = df['Nr'].str.rstrip('. ')
+
+        # Remove any completely empty rows
+        df = df.dropna(how='all')
+
+        # Handle any potential encoding artifacts in text
+        for col in df.select_dtypes(include=['object']).columns:
+            if col != 'Klasė':  # Skip the numeric column we converted
+                df[col] = df[col].replace('nan', pd.NA)
+
+        # Sort by class and topic number for logical ordering
+        if 'Klasė' in df.columns and 'Nr' in df.columns:
+            df = df.sort_values(['Klasė', 'Nr'], na_position='last')
+            df = df.reset_index(drop=True)
+
+        logger.info(f"Successfully loaded curriculum content from {file_path}")
+        logger.info(f"Curriculum content shape: {df.shape}")
+        logger.info(f"Classes covered: {sorted(df['Klasė'].dropna().unique()) if 'Klasė' in df.columns else 'N/A'}")
+        logger.info(f"Subjects: {df['Dalykas'].unique().tolist() if 'Dalykas' in df.columns else 'N/A'}")
+
+        return df
+
+    except FileNotFoundError:
+        logger.error(f"File not found: {file_path}")
+        raise
+    except UnicodeDecodeError as e:
+        logger.error(f"Encoding error when reading {file_path}: {e}")
+        # Try with different encoding
+        try:
+            logger.info("Trying with 'latin-1' encoding...")
+            return read_curriculum_content_csv(file_path, encoding='latin-1')
+        except:
+            logger.error("Failed with alternative encoding as well")
+            raise
+    except Exception as e:
+        logger.error(f"Error reading CSV file {file_path}: {e}")
+        raise
+
+def get_bup_achievements(file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
+    try:
+        # Read CSV with proper encoding
+        df = pd.read_csv(file_path, encoding=encoding)
+
+        # Clean column names (remove extra whitespace)
+        df.columns = df.columns.str.strip()
+
+        # Expected columns for this curriculum content file
+        expected_columns = ['Dokumentas','Skyrius', 'Dalykas', 'Klasė', 'Tema', 'Nr', 'Sritis-tema', 'Mokymosi turinys']
+
+        # Verify all expected columns are present
+        missing_columns = set(expected_columns) - set(df.columns)
+        if missing_columns:
+            logger.warning(f"Missing expected columns: {missing_columns}")
+
+        # Clean text columns - remove extra quotes and whitespace
+        text_columns = ['Dokumentas','Skyrius', 'Dalykas', 'Tema', 'Nr', 'Sritis-tema', 'Mokymosi turinys']
+        for col in text_columns:
+            if col in df.columns:
+                # Remove outer quotes and extra whitespace
+                df[col] = df[col].astype(str).str.strip().str.strip("'\"").str.strip()
+
+        # Convert Klase (Class) to integer, handling any potential issues
+        if 'Klasė' in df.columns:
+            df['Klasė'] = pd.to_numeric(df['Klasė'], errors='coerce').astype('Int64')
+
+        # Clean and standardize the Nr (Number) column
+        if 'Nr' in df.columns:
+            # Remove trailing dots and spaces, standardize format
+            df['Nr'] = df['Nr'].str.rstrip('. ')
+
+        # Remove any completely empty rows
+        df = df.dropna(how='all')
+
+        # Handle any potential encoding artifacts in text
+        for col in df.select_dtypes(include=['object']).columns:
+            if col != 'Klasė':  # Skip the numeric column we converted
+                df[col] = df[col].replace('nan', pd.NA)
+
+        # Sort by class and topic number for logical ordering
+        if 'Klasė' in df.columns and 'Nr' in df.columns:
+            df = df.sort_values(['Klasė', 'Nr'], na_position='last')
+            df = df.reset_index(drop=True)
+
+        logger.info(f"Successfully loaded curriculum content from {file_path}")
+        logger.info(f"Curriculum content shape: {df.shape}")
+        logger.info(f"Classes covered: {sorted(df['Klasė'].dropna().unique()) if 'Klasė' in df.columns else 'N/A'}")
+        logger.info(f"Subjects: {df['Dalykas'].unique().tolist() if 'Dalykas' in df.columns else 'N/A'}")
+
+        return df
+
+    except FileNotFoundError:
+        logger.error(f"File not found: {file_path}")
+        raise
+    except UnicodeDecodeError as e:
+        logger.error(f"Encoding error when reading {file_path}: {e}")
+        # Try with different encoding
+        try:
+            logger.info("Trying with 'latin-1' encoding...")
+            return read_curriculum_content_csv(file_path, encoding='latin-1')
+        except:
+            logger.error("Failed with alternative encoding as well")
+            raise
+    except Exception as e:
+        logger.error(f"Error reading CSV file {file_path}: {e}")
+        raise
+
+def get_curriculum(file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
+    try:
+        # Read CSV with proper encoding
+        df = pd.read_csv(file_path, encoding=encoding)
+
+        # Clean column names (remove extra whitespace)
+        df.columns = df.columns.str.strip()
+
+        # Convert numeric columns to appropriate types
+        numeric_columns = [
+            'Ugdymo proceso savaitė',
+            'Skiriamų valandų skaičius 70 proc',
+            'Skiriamų valandų skaičius 30 proc'
+        ]
+
+        for col in numeric_columns:
+            if col in df.columns:
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+
+        logger.info(f"Successfully loaded history curriculum from {file_path}")
+        logger.info(f"History curriculum shape: {df.shape}")
+
+        return df
+
+    except FileNotFoundError:
+        logger.error(f"File not found: {file_path}")
+        raise
+    except pd.errors.EmptyDataError:
+        logger.error(f"Empty CSV file: {file_path}")
+        raise
+    except pd.errors.ParserError as e:
+        logger.error(f"Error parsing CSV file {file_path}: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error reading {file_path}: {e}")
+        raise
+
+def get_activities(file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
+    """
+    Read JSON file containing educational activities data to pandas DataFrame.
+
+    Args:
+        file_path (str): Path to the JSON file
+        encoding (str): File encoding, defaults to 'utf-8'
+
+    Returns:
+        pd.DataFrame: Processed DataFrame with educational activities data
+    """
+    try:
+        # Read JSON file
+        with open(file_path, 'r', encoding=encoding) as file:
+            data = json.load(file)
+
+        # Extract activities list from the JSON structure
+        activities = data.get('activities', [])
+
+        if not activities:
+            logger.warning("No activities found in the JSON file")
+            return pd.DataFrame()
+
+        # Convert list of dictionaries to DataFrame
+        df = pd.DataFrame(activities)
+
+        # Convert list columns to string format for better readability
+        list_columns = ['strukturos_eiga', 'mokytojo_vaidmuo', 'specialiuju_poreikiu_mokiniai', 'pavyzdziai_temos']
+
+        for col in list_columns:
+            if col in df.columns:
+                df[col] = df[col].apply(lambda x: ' | '.join(x) if isinstance(x, list) else x)
+
+        logger.info(f"Successfully loaded activities data from {file_path}")
+        logger.info(f"Activities data shape: {df.shape}")
+
+        return df
+
+    except FileNotFoundError:
+        logger.error(f"File not found: {file_path}")
+        raise
+    except json.JSONDecodeError as e:
+        logger.error(f"Invalid JSON format in {file_path}: {e}")
+        raise
+    except UnicodeDecodeError as e:
+        logger.error(f"Encoding error when reading {file_path}: {e}")
+        # Try with different encoding
+        try:
+            logger.info("Trying with 'latin-1' encoding...")
+            return read_json_to_dataframe(file_path, encoding='latin-1')
+        except:
+            logger.error("Failed with alternative encoding as well")
+            raise
+    except Exception as e:
+        logger.error(f"Error reading JSON file {file_path}: {e}")
+        raise
+
+def get_lesson_plan_structure(file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
+    try:
+        # Read CSV with proper encoding
+        df = pd.read_csv(file_path, encoding=encoding)
+
+        # Clean column names (remove extra whitespace)
+        df.columns = df.columns.str.strip()
+
+        # Clean text columns - remove extra quotes and whitespace
+        text_columns = ['Section', 'Description']
+        for col in text_columns:
+            if col in df.columns:
+                df[col] = df[col].astype(str).str.strip().str.strip('"').str.strip()
+
+        # Convert Subsection to float, handling any potential issues
+        if 'Subsection' in df.columns:
+            df['Subsection'] = pd.to_numeric(df['Subsection'], errors='coerce')
+
+        # Remove any completely empty rows
+        df = df.dropna(how='all')
+
+        # Sort by Section and Subsection for logical ordering
+        if 'Section' in df.columns and 'Subsection' in df.columns:
+            df = df.sort_values(['Section', 'Subsection'], na_position='last')
+            df = df.reset_index(drop=True)
+
+        logger.info(f"Successfully loaded PP structure from {file_path}")
+        logger.info(f"PP structure shape: {df.shape}")
+
+        return df
+
+    except FileNotFoundError:
+        logger.error(f"File not found: {file_path}")
+        raise
+    except UnicodeDecodeError as e:
+        logger.error(f"Encoding error when reading {file_path}: {e}")
+        # Try with different encoding
+        try:
+            logger.info("Trying with 'latin-1' encoding...")
+            return read_pp_struktura_csv(file_path, encoding='latin-1')
+        except:
+            logger.error("Failed with alternative encoding as well")
+            raise
+    except Exception as e:
+        logger.error(f"Error reading CSV file {file_path}: {e}")
+        raise
+
+def filter_data(df: pd.DataFrame, filters: dict) -> pd.DataFrame:
+    """
+    Filters a pandas DataFrame based on a dictionary of column-value filters.
+
+    Parameters:
+    - df (pd.DataFrame): The DataFrame to filter.
+    - filters (dict): A dictionary where keys are column names and values are the values to filter by.
+
+    Returns:
+    - pd.DataFrame: The filtered DataFrame.
+    """
+
+    for column, value in filters.items():
+        if column in df.columns:
+            df = df[df[column] == value]
+        # If the column does not exist, it is ignored
+    return df
+
+def generate_lesson_task(df: pd.DataFrame, promt: str) -> str:
+    response = client.responses.create(
+        model="gpt-4.1",
+        input=f"""{promt}. Argumentai: {df} """
+    )
+
+    print(response.output_text)
+    return response.output_text
+
+def generate_lesson_plan(df: pd.DataFrame, promt: str) -> str:
+    response = client.responses.create(
+        model="gpt-4.1",
+        input=f"""{promt}. Argumentai: {df} """
+    )
+    return response.output_text
+
+# Sidebar navigation
+st.sidebar.title("📚 Pamokų planavimo sistema")
+page = st.sidebar.radio(
+    "Navigavimas:",
+    ["Duomenų įvestis", "Pamokos planas", "Duomenys"], index=0
+)
+
+
+try:
+    bup_data1_full = get_bup_competencies(BUP_COMPETENCIES_PATH)
+    bup_data2_full = get_bup_study_content(BUP_STUDY_CONTENT_PATH)
+    bup_data3_full = get_bup_achievements(BUP_ACHIEVEMENTS_BY_SUBJECT_PATH)
+    curiculum_data_full = get_curriculum(HISTORY_CURRICULUM_PATH)
+    activities_data_full = get_activities(ACTIVITIES_PATH)
+    lesson_plan_structure_data_full = get_lesson_plan_structure(LESSON_PLAN_STRUCTURE_PATH)
+
+    input_data_state = True
+
+except Exception as e:
+    print(f"An unexpected error occurred loading data: {e}")
+
+# Main content based on selected page
+if page == "Duomenų įvestis":
+    st.title("📋 Duomenų įvestis")
+    st.header("Klasės profilis")
+
+    with st.form("lesson_data_form"):
+        col1, col2 = st.columns(2)
+
+        with col1:
+            mokslo_metai = st.selectbox(
+                "Mokslo metai:",
+                ["2024-2025", "2025-2026"], index=0
+            )
+
+            dalykas = st.selectbox(
+                "Dalykas:",
+                ["Matematika", "Lietuvių kalba ir literatūra", "Istorija"], index=2  # Default to "Istorija"
+            )
+
+            pamokoje_dirbs = st.selectbox(
+                "Pamokoje dirbs:",
+                ["Mokytojas", "Mokytojas ir spec. pedagogas", "Mokytojas ir mokinio padėjėjas"], index=0
+            )
+
+            grupes_dinamika = st.selectbox(
+                "Grupes dinamika:",
+                ["Homogeninė grupė", "Heterogenine grupė"], index=0
+            )
+
+        with col2:
+            klase = st.selectbox(
+                "Klasė:",
+                [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], index=4  # Default to 5
+            )
+
+            klase_pasirengimas = st.selectbox(
+                "Klasės pasirengimas:",
+                ["Aukštas pasirengimo lygis", "Vidutinis pasirengimo lygis", "Žemas pasirengimo lygis"], index=1
+            )
+
+            uzdavinio_formavimas = st.selectbox(
+                "Uzdavinio formavimas:",
+                ["Grupėje", "Individualiai"], index=0
+            )
+
+        tema_options = curiculum_data_full['Tema'].dropna().unique()
+        tema = st.selectbox("Tema:", options=tema_options)
+        kompetencija = curiculum_data_full['Tema'].dropna().unique()
+
+        filters_dict = {
+            'Dalykas': dalykas,
+            'Klasė': klase,
+            'Mokslo metai': mokslo_metai,
+            'Tema': tema,
+            'Klasės pasirengimo lygis': klase_pasirengimas,
+        }
+
+        cur_data = filter_data(get_curriculum(HISTORY_CURRICULUM_PATH), filters_dict)
+        if filters_dict['Dalykas'] == 'Istorija':
+            filters_dict['Ugdoma kompetencija'] = cur_data['Ugdoma kompetencija'].values[0]
+            filters_dict['Pasiekimas'] = cur_data['Pasiekimas'].values[0]
+
+
+
+        logger.info(f"Updated filters:  {filters_dict}")
+        bup_data3 = filter_data(get_bup_achievements(BUP_ACHIEVEMENTS_BY_SUBJECT_PATH), filters_dict)
+        bup_data1 = filter_data(get_bup_competencies(BUP_COMPETENCIES_PATH), filters_dict)
+        bup_data2 = filter_data(get_bup_study_content(BUP_STUDY_CONTENT_PATH), filters_dict)
+        activities_data = filter_data(get_activities(ACTIVITIES_PATH), filters_dict)
+        lesson_plan_structure_data = filter_data(get_lesson_plan_structure(LESSON_PLAN_STRUCTURE_PATH), filters_dict)
+
+        # Submit button with updated title and action
+        submitted = st.form_submit_button("📝 Išsaugoti", use_container_width=True)
+
+
+        if submitted:
+            with st.spinner("Gaunami BUP duomenys ir teminiai planai..."):
+                st.session_state.bup_data1 = bup_data1
+                st.session_state.bup_data2 = bup_data2
+                st.session_state.bup_data3 = bup_data3
+                st.session_state.curiculum_data = cur_data
+                st.session_state.activities_data = activities_data
+                st.session_state.lesson_plan_structure_data = lesson_plan_structure_data
+                st.session_state.teacher_input_data = True
+
+                st.success("✅ BUP duomenys ir teminiai planai sėkmingai gauti!")
+                st.rerun()
+
+    if st.session_state.bup_data1 is not None:
+        st.header("📊 Užkrauti duomenys")
+
+        bup_data1 = get_bup_competencies(BUP_COMPETENCIES_PATH)
+        bup_data2 = get_bup_study_content(BUP_STUDY_CONTENT_PATH)
+        bup_data3 = get_bup_achievements(BUP_ACHIEVEMENTS_BY_SUBJECT_PATH)
+        curiculum_data = get_curriculum(HISTORY_CURRICULUM_PATH)
+        activities_data = get_activities(ACTIVITIES_PATH)
+        lesson_plan_structure_data = get_lesson_plan_structure(LESSON_PLAN_STRUCTURE_PATH)
+
+        teacher_input_state = True
+
+        with st.expander("🔍 Peržiūrėti Teminio plano duomenis", expanded=False):
+                st.subheader("Teminis planas")
+                st.dataframe(st.session_state.curiculum_data, use_container_width=True)
+
+        with st.expander("🔍 Peržiūrėti BUP duomenis", expanded=False):
+
+            st.subheader("BUP - Ugdomos kompetencijos")
+            st.dataframe(st.session_state.bup_data1, use_container_width=True)
+
+            st.subheader("BUP - Mokymosi turinys")
+            st.dataframe(st.session_state.bup_data2, use_container_width=True)
+
+            st.subheader("BUP - Pasiekimai pagal sritis")
+            st.dataframe(st.session_state.bup_data3, use_container_width=True)
+
+        with st.expander("🔍 Peržiūrėti Veiklu rinkinio duomenis", expanded=False):
+                st.subheader("Veiklu rinkinys")
+                st.dataframe(st.session_state.activities_data, use_container_width=True)
+
+        with st.expander("🔍 Peržiūrėti Pamokos plano strukturos duomenis", expanded=False):
+                st.subheader("Pamokos plano struktura")
+                st.dataframe(st.session_state.lesson_plan_structure_data, use_container_width=True)
+
+        if st.button("🚀 Generuoti uždavinį", use_container_width=True) :
+            with st.spinner("Generuojamas uždavinys..."):
+                st.session_state.bup_df = filter_data(get_bup_achievements(BUP_ACHIEVEMENTS_BY_SUBJECT_PATH), filters_dict)
+                st.session_state.cur_df = filter_data(get_curriculum(HISTORY_CURRICULUM_PATH), filters_dict)
+
+                args_df = {
+                    "Bendroji ugdymo programa": st.session_state.bup_df ,
+                    "Teminis planas": st.session_state.cur_df
+                }
+
+                st.session_state.lesson_task = generate_lesson_task(args_df, lesson_task_promt)
+                # uzd = task_str
+                lesson_task_state = True
+
+        if st.session_state.lesson_task:
+
+                with st.expander("🔍 Input data", expanded=False):
+                    st.subheader("Mokymosi uždavinys: Įeities duomenys")
+                    st.markdown(f"Promt: {lesson_task_promt}", unsafe_allow_html=True)
+                    st.dataframe(st.session_state.bup_df, use_container_width=True)
+                    st.dataframe(st.session_state.cur_df, use_container_width=True)
+
+                with st.expander("🔍 Peržiūrėti mokymosi uždavinį", expanded=True):
+                    st.subheader("Sugeneruotas Mokymosi uždavinys:")
+                    st.markdown(st.session_state.lesson_task)
+
+
+        if st.button("🚀 Generuoti pamokos planą", use_container_width=True) and st.session_state.lesson_task:
+            with st.spinner("Generuojamas pamokos planas..."):
+                bup_df = filter_data(get_bup_achievements(BUP_ACHIEVEMENTS_BY_SUBJECT_PATH), filters_dict)
+                cur_df = filter_data(get_curriculum(HISTORY_CURRICULUM_PATH), filters_dict)
+
+                args_df = {
+                    "Pamokos plano struktura": lesson_plan_structure_data,
+                    "Teminis planas": cur_df,
+                    "Mokymosi uzdavinys": uzd
+                }
+
+                st.session_state.pp_str =  generate_lesson_plan(args_df, lesson_plan_promt)
+                lesson_plan_state = True
+
+                with st.expander("🔍 Peržiūrėti pamokos plana", expanded=False):
+                    st.subheader("PP input")
+                    st.json(args_df)
+                    st.subheader("PP")
+                    st.markdown(st.session_state.pp_str)
+
+                st.session_state.lesson_plan_generated = True
+                st.session_state.generation_status = f"Pamokos planas sėkmingai sugeneruotas!"
+
+        # Show generation status
+        if st.session_state.generation_status:
+            if st.session_state.lesson_plan_generated:
+                st.success(f"✅ {st.session_state.generation_status}")
+                st.info("👆 Eikite į 'Pamokos planas' skyrių, kad peržiūrėtumėte sugeneruotą planą")
+            else:
+                st.error(f"❌ {st.session_state.generation_status}")
+
+
+elif page == "Pamokos planas":
+    st.title("📖 Pamokos planas")
+
+    if st.session_state.pp_str:
+
+        with st.expander("🔍 Įeities duomenys ", expanded=False):
+            None
+            # st.dataframe(lesson_plan_structure_data, use_container_width=True)
+
+        st.title("📖 **Pamokos Planas**")
+        st.markdown(st.session_state.pp_str)
+        st.markdown("---")
+        st.title("📖 **Pamokos plano įeities duomenys**")
+
+
+    else:
+        st.info("ℹ️ Pamokos planas dar nesugeneruotas")
+
+
+elif page == "Duomenys":
+    st.title("📖 Užkrauti duomenys")
+
+    with st.expander("🔍 Peržiūrėti BUP duomenis", expanded=False):
+        st.subheader("BUP - Ugdomos kompetencijos")
+        st.dataframe(bup_data1_full, use_container_width=True)
+
+        st.subheader("BUP - Mokymosi turinys")
+        st.dataframe(bup_data2_full, use_container_width=True)
+
+        st.subheader("BUP - Pasiekimai pagal sritis")
+        st.dataframe(bup_data3_full, use_container_width=True)
+
+    with st.expander("🔍 Peržiūrėti Teminio plano duomenis", expanded=False):
+        st.subheader("Teminis planas")
+        st.dataframe(curiculum_data_full, use_container_width=True)
+
+    with st.expander("🔍 Peržiūrėti Veiklu rinkinio duomenis", expanded=False):
+        st.subheader("Veiklu rinkinys")
+        st.dataframe(activities_data_full, use_container_width=True)
+
+    with st.expander("🔍 Peržiūrėti Pamokos plano strukturos duomenis", expanded=False):
+        st.subheader("Pamokos plano struktura")
+        st.dataframe(lesson_plan_structure_data_full, use_container_width=True)
+
+
+# Footer
+st.sidebar.markdown("---")
+st.sidebar.markdown("**Statusai**")
+
+
+input_data_state_icon = ":white_check_mark:" if input_data_state else ":exclamation:"
+teacher_input_state_icon = ":white_check_mark:" if st.session_state.teacher_input_data else ":exclamation:"
+lesson_task_state_icon = ":white_check_mark:" if lesson_task_state else ":exclamation:"
+lesson_plan_state_icon = ":white_check_mark:" if lesson_plan_state else ":exclamation:"
+
+st.sidebar.write(f"Įeities duomenys  {input_data_state_icon}")
+st.sidebar.write(f"Mokytojo įvedami duomenys  {teacher_input_state_icon}")
+st.sidebar.write(f"Mokymosi uždavinys  {lesson_task_state_icon}")
+st.sidebar.write(f"Pamokos planas  {lesson_plan_state_icon}")
+
+st.sidebar.markdown("---")
+st.sidebar.markdown("Versija 1.0")

@@ -1,0 +1,89 @@
+{
+  "activities": [
+    {
+      "name": "Sakyk ir klausyk",
+      "Klasės pasirengimo lygis": "Žemas pasirengimo lygis",
+      "paskirtis": "Ugdyti aktyvaus klausymosi, aiškaus minčių dėstymo, abipusio supratimo, empatijos ir pagarbos pašnekovui įgūdžius.",
+      "trumpas_aprasymas": "Mokiniai dirba poromis. Vienas mokinys kalba duotą laiką tam tikra tema ar atsako į klausimą, kitas aktyviai klausosi. Po to klausytojas atpasakoja, ką išgirdo. Vėliau jie apsikeičia vaidmenimis.",
+      "strukturos_eiga": [
+        "Pasiruošimas: Mokytojas pateikia temą ar klausimą. Pora susitaria, kuris pradės kalbėti.",
+        "Pirmasis kalbėtojas: Kalba nustatytą laiką (pvz., 1 minutę), o partneris tyliai klausosi.",
+        "Atpasakojimas: Klausytojas atpasakoja, ką išgirdo.",
+        "Vaidmenų keitimas: Dabar kalba antrasis mokinys, pirmasis klauso ir vėliau atpasakoja.",
+        "Papildomai: Poros aptaria bendrus pastebėjimus arba jungia mintis į bendrą išvadą."
+      ],
+      "mokytojo_vaidmuo": [
+        "Parenka tinkamą temą.",
+        "Stebi porų darbą.",
+        "Naudoja laikmatį ar vizualinius priminimus.",
+        "Skatina pagarbų ir kantrų klausymąsi."
+      ],
+      "specialiuju_poreikiu_mokiniai": [
+        "Klausimų kortelės ar pradžios frazės.",
+        "Piešimas ar rašymas vietoje kalbėjimo.",
+        "Darbas su padėjėju ar palaikančiu partneriu."
+      ],
+      "pritaikymo_galimybes": "Tinka kalbų, istorijos, etikos, gamtos mokslų pamokoms.",
+      "pavyzdziai_temos": [
+        "Ką man reiškia bendruomenė?",
+        "Kodėl svarbu rūšiuoti atliekas?"
+      ]
+    },
+    {
+      "name": "Kampai",
+      "Klasės pasirengimo lygis": "Vidutinis pasirengimo lygis",
+      "paskirtis": "Skatinti mokinius argumentuotai išreikšti nuomonę, išgirsti skirtingas pozicijas, ugdyti diskusijos kultūrą ir kritinį mąstymą.",
+      "trumpas_aprasymas": "Kiekvienas klasės kampas žymi skirtingą atsakymą ar nuomonę. Mokiniai pasirenka kampą pagal savo nuomonę ir diskutuoja su grupės nariais.",
+      "strukturos_eiga": [
+        "Klausimo ar teiginio pateikimas.",
+        "Pasirinkimas pagal nuomonę.",
+        "Grupinė diskusija kampuose.",
+        "Pasidalijimas su klase.",
+        "Refleksija apie patirtį ir galimą nuomonės pokytį."
+      ],
+      "mokytojo_vaidmuo": [
+        "Užtikrina aiškius, įtraukiančius klausimus.",
+        "Padeda tolygiai paskirstyti mokinius.",
+        "Skatina pagarbų klausymąsi ir įvairovę."
+      ],
+      "specialiuju_poreikiu_mokiniai": [
+        "Išankstinis pasiruošimas su atsakymų variantais.",
+        "Vaizdinės kortelės ar tekstai.",
+        "Galimybė kalbėti paskutiniais."
+      ],
+      "pritaikymo_galimybes": "Vertybinės diskusijos, socialiniai mokslai, geografija, pilietinis ugdymas.",
+      "pavyzdziai_temos": [
+        "Ar egzaminai naudingi mokymuisi?",
+        "Kurį sportą laikai labiausiai komandiniu?"
+      ]
+    },
+    {
+      "name": "Piešinys",
+      "Klasės pasirengimo lygis": "Vidutinis pasirengimo lygis",
+      "paskirtis": "Skatinti įsitraukimą, kūrybiškumą, idėjų generavimą, bendradarbiavimą ir alternatyvią raišką.",
+      "trumpas_aprasymas": "Grupės kuria simbolinį ar vizualinį „piešinį“ tam tikra tema. Lapai keliauja tarp grupių, kurios papildo kūrinį.",
+      "strukturos_eiga": [
+        "Grupės formavimas (3–4 mokiniai).",
+        "Temos pateikimas kūrybai.",
+        "Kūryba žodžiais, simboliais, piešiniais.",
+        "Keitimas tarp grupių.",
+        "Grįžimas ir rezultatų analizė."
+      ],
+      "mokytojo_vaidmuo": [
+        "Skatina kūrybišką raišką.",
+        "Padeda suprasti temą.",
+        "Siūlo simbolių ar žodžių banką."
+      ],
+      "specialiuju_poreikiu_mokiniai": [
+        "Naudoja piktogramas, lipdukus, iliustracijas.",
+        "Padėjėjas arba mažesnė grupė.",
+        "Tinka ir žodinę raišką sunkiai įgyvendinantiems."
+      ],
+      "pritaikymo_galimybes": "Refleksijai, temos pristatymui, saviraiškai, klasės klimatui formuoti.",
+      "pavyzdziai_temos": [
+        "Kaip atrodo svajonių mokykla?",
+        "Kas daro mane laimingu?"
+      ]
+    }
+  ]
+}
