@@ -48,8 +48,65 @@ lesson_plan_promt = """Sukurk mokiniui skirtą pamokos planą, kuris:
             remiasi mokymosi uždaviniu "Mokymosi uždavinys"""
 
 
-#
-# # Initialize session state
+# Data structured as a dictionary: {Topic: [List of Subtopics]}
+data = {
+    "Konstruktyviai komunikuoti tarpusavyje": [
+        "klausytis kito ir šiam kalbant žiūrėti į jį",
+        "palaikyti akių kontaktą",
+        "leisti kitam išsisakyti",
+        "aktyviai klausytis",
+        "draugiškai išsakyti dalykinę kritiką",
+        "reaguoti į ankstesnius pasisakymus ir juos papildyti",
+        "apibendrinti kitų pasisakymus",
+        "grupėje visiems skirti vienodai laiko pasisakymams",
+        "surinkti idėjas ir jas apibendrinti",
+        "reflektuoti bendradarbiavimą",
+        "rasti kompromisus ir su jais susitaikyti",
+        "gebėti būti empatiškam ir pažvelgti iš kitos perspektyvos",
+        "įvardinti savo jausmus",
+        "tyliai kalbėtis tarpusavyje",
+        "sėdėti ir likti grupėje"
+    ],
+    "Gerai elgtis": [
+        "mokėti atsiprašyti",
+        "sveikintis",
+        "padėkoti",
+        "maloniai suteikti informaciją bei jos teirautis",
+        "būti punktualiam"
+    ],
+    "Remti, skatinti vienas kitą ir vienas kitam padėti": [
+        "siūlyti pagalbą kitiems",
+        "pačiam priimti pagalbą",
+        "klausinėti vienas kito, palyginti tarpusavyje rezultatus ir vienas kitą pataisyti",
+        "dirbant poroje pagirti vienas kitą",
+        "paskatinti vienas kitą pagyrimu, padrąsinti neverbaliniu būdu ir pasidžiaugti pergalėmis",
+        "dirbant 3 ar 4 žmonių grupėse palyginti tarpusavyje rezultatus ir vienas kitą pataisyti",
+        "pasiskirstyti mokymosi grupėje funkcijomis, atlikti ir įvertinti jas",
+        "duoti grįžtamąjį ryšį",
+        "paprašyti paaiškinti arba pasiteirauti, kaip buvo suprasta",
+        "papildyti atsakymus",
+        "mokėti reflektuoti grupinius procesus"
+    ],
+    "Prisiimti atsakomybę už savo klasę": [
+        "laikytis taisyklių",
+        "nė vieno neatskirti",
+        "palaikyti klasėje švarą",
+        "patikimai atlikti užduotis klasėje"
+    ],
+    "Mokėti korektiškai spręsti konfliktus": [
+        "kritikuoti draugiškai, neapimant dalykinės pusės su asmenine",
+        "į asmenį nukreiptą kritiką išsakyti draugiškai ir konstruktyviai",
+        "priimti kritiką",
+        "tarpininkauti konfliktuose",
+        "susitarti (rasti konsensusą)"
+    ]
+}
+
+
+
+if 'init_input_data' not in st.session_state:
+    st.session_state.init_input_data = None
+
 if 'teacher_input_data' not in st.session_state:
     st.session_state.teacher_input_data = None
 
@@ -86,8 +143,9 @@ if 'tema_data' not in st.session_state:
 if 'pp_str' not in st.session_state:
     st.session_state.pp_str = ""
 
+if "selected_topic" not in st.session_state:
+    st.session_state.selected_topic = list(data.keys())[0]
 
-# @st.cache_data
 def get_bup_competencies(file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
     try:
         df = pd.read_csv(file_path, encoding=encoding)
@@ -467,7 +525,6 @@ page = st.sidebar.radio(
     ["Duomenų įvestis", "Pamokos planas", "Duomenys"], index=0
 )
 
-
 try:
     bup_data1_full = get_bup_competencies(BUP_COMPETENCIES_PATH)
     bup_data2_full = get_bup_study_content(BUP_STUDY_CONTENT_PATH)
@@ -476,7 +533,7 @@ try:
     activities_data_full = get_activities(ACTIVITIES_PATH)
     lesson_plan_structure_data_full = get_lesson_plan_structure(LESSON_PLAN_STRUCTURE_PATH)
 
-    input_data_state = True
+    st.session_state.init_input_data = True
 
 except Exception as e:
     print(f"An unexpected error occurred loading data: {e}")
@@ -505,10 +562,6 @@ if page == "Duomenų įvestis":
                 ["Mokytojas", "Mokytojas ir spec. pedagogas", "Mokytojas ir mokinio padėjėjas"], index=0
             )
 
-            grupes_dinamika = st.selectbox(
-                "Grupes dinamika:",
-                ["Homogeninė grupė", "Heterogenine grupė"], index=0
-            )
 
         with col2:
             klase = st.selectbox(
@@ -633,12 +686,14 @@ if page == "Duomenų įvestis":
             with st.spinner("Generuojamas pamokos planas..."):
                 bup_df = filter_data(get_bup_achievements(BUP_ACHIEVEMENTS_BY_SUBJECT_PATH), filters_dict)
                 cur_df = filter_data(get_curriculum(HISTORY_CURRICULUM_PATH), filters_dict)
+                st.session_state.activities_data = filter_data(get_curriculum(HISTORY_CURRICULUM_PATH), filters_dict)
 
 
                 args_df = {
                     "Pamokos plano struktura": lesson_plan_structure_data,
                     "Teminis planas": cur_df,
-                    "Mokymosi uzdavinys": uzd
+                    "Mokymosi uzdavinys": uzd,
+                    "Veiklos struktura": st.session_state.activities_data
                 }
 
                 st.session_state.pp_str =  generate_lesson_plan(args_df, lesson_plan_promt)
@@ -669,7 +724,8 @@ elif page == "Pamokos planas":
         with st.expander("🔍 Įeities duomenys ", expanded=False):
 
             st.markdown(f"Promt: {lesson_plan_promt}", unsafe_allow_html=True)
-            # st.markdown(st.session_state.lesson_task, use_container_width=True)
+            st.dataframe(st.session_state.activities_data, use_container_width=True)
+            st.markdown(st.session_state.lesson_task)
 
         st.title("📖 **Pamokos Planas**")
         st.markdown(st.session_state.pp_str)
@@ -710,8 +766,7 @@ elif page == "Duomenys":
 st.sidebar.markdown("---")
 st.sidebar.markdown("**Statusai**")
 
-
-input_data_state_icon = ":white_check_mark:" if input_data_state else ":exclamation:"
+input_data_state_icon = ":white_check_mark:" if st.session_state.init_input_data else ":exclamation:"
 teacher_input_state_icon = ":white_check_mark:" if st.session_state.teacher_input_data else ":exclamation:"
 lesson_task_state_icon = ":white_check_mark:" if lesson_task_state else ":exclamation:"
 lesson_plan_state_icon = ":white_check_mark:" if lesson_plan_state else ":exclamation:"
@@ -722,4 +777,4 @@ st.sidebar.write(f"Mokymosi uždavinys  {lesson_task_state_icon}")
 st.sidebar.write(f"Pamokos planas  {lesson_plan_state_icon}")
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("Versija 1.0")
+st.sidebar.markdown("Versija 1.1")
