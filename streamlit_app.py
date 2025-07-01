@@ -36,6 +36,7 @@ BUP_STUDY_CONTENT_PATH = "data/BUP/Istorijos_BUP_mokymosi_turinys.csv"
 BUP_ACHIEVEMENTS_BY_SUBJECT_PATH = "data/BUP/istorijos_BUP_pasiekimai_pagal_sritis.csv"
 ACTIVITIES_PATH = "data/veiklos_strukturos/visos_struktruros.json"
 LESSON_PLAN_STRUCTURE_PATH = "data/pamokos_plano_struktura/PP_struktura.csv"
+SOCIAL_SKILLS_PATH = "data/igudziai/bendravimo_igudziai.csv"
 
 lesson_task_promt="""Sukurk mokiniui skirtą mokymosi uždavinį, kuris:
             aprašo, ką turi pasiekti mokinys pamokos pabaigoje ir pagal kokius kriterijus yra vertinama sėkmė,
@@ -46,62 +47,6 @@ lesson_task_promt="""Sukurk mokiniui skirtą mokymosi uždavinį, kuris:
 lesson_plan_promt = """Sukurk mokiniui skirtą pamokos planą, kuris:
             griežtai atitinka pamokos plano struktura nurodyta 'pamokos plano struktura',
             remiasi mokymosi uždaviniu "Mokymosi uždavinys"""
-
-
-# Data structured as a dictionary: {Topic: [List of Subtopics]}
-data = {
-    "Konstruktyviai komunikuoti tarpusavyje": [
-        "klausytis kito ir šiam kalbant žiūrėti į jį",
-        "palaikyti akių kontaktą",
-        "leisti kitam išsisakyti",
-        "aktyviai klausytis",
-        "draugiškai išsakyti dalykinę kritiką",
-        "reaguoti į ankstesnius pasisakymus ir juos papildyti",
-        "apibendrinti kitų pasisakymus",
-        "grupėje visiems skirti vienodai laiko pasisakymams",
-        "surinkti idėjas ir jas apibendrinti",
-        "reflektuoti bendradarbiavimą",
-        "rasti kompromisus ir su jais susitaikyti",
-        "gebėti būti empatiškam ir pažvelgti iš kitos perspektyvos",
-        "įvardinti savo jausmus",
-        "tyliai kalbėtis tarpusavyje",
-        "sėdėti ir likti grupėje"
-    ],
-    "Gerai elgtis": [
-        "mokėti atsiprašyti",
-        "sveikintis",
-        "padėkoti",
-        "maloniai suteikti informaciją bei jos teirautis",
-        "būti punktualiam"
-    ],
-    "Remti, skatinti vienas kitą ir vienas kitam padėti": [
-        "siūlyti pagalbą kitiems",
-        "pačiam priimti pagalbą",
-        "klausinėti vienas kito, palyginti tarpusavyje rezultatus ir vienas kitą pataisyti",
-        "dirbant poroje pagirti vienas kitą",
-        "paskatinti vienas kitą pagyrimu, padrąsinti neverbaliniu būdu ir pasidžiaugti pergalėmis",
-        "dirbant 3 ar 4 žmonių grupėse palyginti tarpusavyje rezultatus ir vienas kitą pataisyti",
-        "pasiskirstyti mokymosi grupėje funkcijomis, atlikti ir įvertinti jas",
-        "duoti grįžtamąjį ryšį",
-        "paprašyti paaiškinti arba pasiteirauti, kaip buvo suprasta",
-        "papildyti atsakymus",
-        "mokėti reflektuoti grupinius procesus"
-    ],
-    "Prisiimti atsakomybę už savo klasę": [
-        "laikytis taisyklių",
-        "nė vieno neatskirti",
-        "palaikyti klasėje švarą",
-        "patikimai atlikti užduotis klasėje"
-    ],
-    "Mokėti korektiškai spręsti konfliktus": [
-        "kritikuoti draugiškai, neapimant dalykinės pusės su asmenine",
-        "į asmenį nukreiptą kritiką išsakyti draugiškai ir konstruktyviai",
-        "priimti kritiką",
-        "tarpininkauti konfliktuose",
-        "susitarti (rasti konsensusą)"
-    ]
-}
-
 
 
 if 'init_input_data' not in st.session_state:
@@ -143,8 +88,11 @@ if 'tema_data' not in st.session_state:
 if 'pp_str' not in st.session_state:
     st.session_state.pp_str = ""
 
-if "selected_topic" not in st.session_state:
-    st.session_state.selected_topic = list(data.keys())[0]
+if 'skillz' not in st.session_state:
+    st.session_state.skillz = ""
+
+# if "selected_topic" not in st.session_state:
+#     st.session_state.selected_topic = list(data.keys())[0]
 
 def get_bup_competencies(file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
     try:
@@ -437,6 +385,39 @@ def get_activities(file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
         logger.error(f"Error reading JSON file {file_path}: {e}")
         raise
 
+def get_social_skills(file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
+    try:
+        # Read CSV with no headers and clean up quotes
+        df = pd.read_csv(file_path, header=None, names=["Raw"], encoding=encoding)
+        df["Raw"] = df["Raw"].str.strip('"').str.strip()
+
+        # Extract code and description
+        df[['Code', 'Bendravimo įgūdis']] = df["Raw"].str.extract(r'(\d+\.\d+)\s+(.*)')
+
+        # Extract main theme (e.g., "Konstruktyviai komunikuoti tarpusavyje")
+        df['Main Theme'] = df['Bendravimo įgūdis'].str.extract(r'^(.*?)(?:\s*-\s*)')
+
+        # Reorder columns
+        df = df[['Code', 'Main Theme', 'Bendravimo įgūdis']]
+
+        logger.info(f"Successfully loaded competencies from {file_path}")
+        logger.info(f"Competencies shape: {df.shape}")
+
+        return df
+
+    except FileNotFoundError:
+        logger.error(f"File not found: {file_path}")
+        raise
+    except pd.errors.EmptyDataError:
+        logger.error(f"Empty CSV file: {file_path}")
+        raise
+    except pd.errors.ParserError as e:
+        logger.error(f"Error parsing CSV file {file_path}: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Unexpected error reading {file_path}: {e}")
+        raise
+
 def get_lesson_plan_structure(file_path: str, encoding: str = 'utf-8') -> pd.DataFrame:
     try:
         # Read CSV with proper encoding
@@ -532,7 +513,7 @@ try:
     curiculum_data_full = get_curriculum(HISTORY_CURRICULUM_PATH)
     activities_data_full = get_activities(ACTIVITIES_PATH)
     lesson_plan_structure_data_full = get_lesson_plan_structure(LESSON_PLAN_STRUCTURE_PATH)
-
+    skills = get_social_skills(SOCIAL_SKILLS_PATH)
     st.session_state.init_input_data = True
 
 except Exception as e:
@@ -562,7 +543,6 @@ if page == "Duomenų įvestis":
                 ["Mokytojas", "Mokytojas ir spec. pedagogas", "Mokytojas ir mokinio padėjėjas"], index=0
             )
 
-
         with col2:
             klase = st.selectbox(
                 "Klasė:",
@@ -575,13 +555,23 @@ if page == "Duomenų įvestis":
             )
 
             uzdavinio_formavimas = st.selectbox(
-                "Uzdavinio formavimas:",
+                "Uždavinio atlikimas:",
                 ["Grupėje", "Individualiai"], index=0
             )
+
+        igudis = st.selectbox(
+            "Bendravimo įgūdis:",
+            skills['Bendravimo įgūdis'], index=0
+        )
 
         tema_options = curiculum_data_full['Tema'].dropna().unique()
         tema = st.selectbox("Tema:", options=tema_options)
         kompetencija = curiculum_data_full['Tema'].dropna().unique()
+
+
+        vad = st.text_input(
+            "Vadovėlio medžiaga", value=""
+        )
 
         filters_dict = {
             'Dalykas': dalykas,
@@ -589,6 +579,7 @@ if page == "Duomenų įvestis":
             'Mokslo metai': mokslo_metai,
             'Tema': tema,
             'Klasės pasirengimo lygis': klase_pasirengimas,
+            'Bendravimo įgūdis': igudis
         }
 
         cur_data = filter_data(get_curriculum(HISTORY_CURRICULUM_PATH), filters_dict)
@@ -602,10 +593,9 @@ if page == "Duomenų įvestis":
         bup_data2 = filter_data(get_bup_study_content(BUP_STUDY_CONTENT_PATH), filters_dict)
         activities_data = filter_data(get_activities(ACTIVITIES_PATH), filters_dict)
         lesson_plan_structure_data = filter_data(get_lesson_plan_structure(LESSON_PLAN_STRUCTURE_PATH), filters_dict)
+        skillz  = filter_data(get_social_skills(SOCIAL_SKILLS_PATH), filters_dict)
 
-        # Submit button with updated title and action
         submitted = st.form_submit_button("📝 Išsaugoti", use_container_width=True)
-
 
         if submitted:
             with st.spinner("Gaunami BUP duomenys ir teminiai planai..."):
@@ -615,6 +605,7 @@ if page == "Duomenų įvestis":
                 st.session_state.curiculum_data = cur_data
                 st.session_state.activities_data = activities_data
                 st.session_state.lesson_plan_structure_data = lesson_plan_structure_data
+                st.session_state.skillz = skillz
                 st.session_state.teacher_input_data = True
 
                 st.success("✅ BUP duomenys ir teminiai planai sėkmingai gauti!")
@@ -629,6 +620,7 @@ if page == "Duomenų įvestis":
         curiculum_data = get_curriculum(HISTORY_CURRICULUM_PATH)
         activities_data = get_activities(ACTIVITIES_PATH)
         lesson_plan_structure_data = get_lesson_plan_structure(LESSON_PLAN_STRUCTURE_PATH)
+        skills = get_social_skills(SOCIAL_SKILLS_PATH)
 
         teacher_input_state = True
 
@@ -637,13 +629,10 @@ if page == "Duomenų įvestis":
                 st.dataframe(st.session_state.curiculum_data, use_container_width=True)
 
         with st.expander("🔍 Peržiūrėti BUP duomenis", expanded=False):
-
             st.subheader("BUP - Ugdomos kompetencijos")
             st.dataframe(st.session_state.bup_data1, use_container_width=True)
-
             st.subheader("BUP - Mokymosi turinys")
             st.dataframe(st.session_state.bup_data2, use_container_width=True)
-
             st.subheader("BUP - Pasiekimai pagal sritis")
             st.dataframe(st.session_state.bup_data3, use_container_width=True)
 
@@ -654,6 +643,13 @@ if page == "Duomenų įvestis":
         with st.expander("🔍 Peržiūrėti Pamokos plano strukturos duomenis", expanded=False):
                 st.subheader("Pamokos plano struktura")
                 st.dataframe(st.session_state.lesson_plan_structure_data, use_container_width=True)
+
+        with st.expander("🔍 Peržiūrėti Bendravimo igudzius", expanded=False):
+            st.subheader("Bendravimo igudziai")
+            st.dataframe(st.session_state.skillz, use_container_width=True)
+
+        with st.expander("🔍 Vadovelio medziaga", expanded=False):
+            st.markdown(vad)
 
         if st.button("🚀 Generuoti uždavinį", use_container_width=True) :
             with st.spinner("Generuojamas uždavinys..."):
@@ -666,7 +662,6 @@ if page == "Duomenų įvestis":
                 }
 
                 st.session_state.lesson_task = generate_lesson_task(args_df, lesson_task_promt)
-                # uzd = task_str
                 lesson_task_state = True
 
         if st.session_state.lesson_task:
@@ -680,6 +675,10 @@ if page == "Duomenų įvestis":
                 with st.expander("🔍 Peržiūrėti mokymosi uždavinį", expanded=True):
                     st.subheader("Sugeneruotas Mokymosi uždavinys:")
                     st.markdown(st.session_state.lesson_task)
+
+
+
+
 
 
         if st.button("🚀 Generuoti pamokos planą", use_container_width=True) and st.session_state.lesson_task:
@@ -718,11 +717,8 @@ if page == "Duomenų įvestis":
 
 
 elif page == "Pamokos planas":
-
     if st.session_state.pp_str:
-
         with st.expander("🔍 Įeities duomenys ", expanded=False):
-
             st.markdown(f"Promt: {lesson_plan_promt}", unsafe_allow_html=True)
             st.dataframe(st.session_state.activities_data, use_container_width=True)
             st.markdown(st.session_state.lesson_task)
@@ -730,8 +726,6 @@ elif page == "Pamokos planas":
         st.title("📖 **Pamokos Planas**")
         st.markdown(st.session_state.pp_str)
         st.markdown("---")
-
-
     else:
         st.info("ℹ️ Pamokos planas dar nesugeneruotas")
 
@@ -777,4 +771,4 @@ st.sidebar.write(f"Mokymosi uždavinys  {lesson_task_state_icon}")
 st.sidebar.write(f"Pamokos planas  {lesson_plan_state_icon}")
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("Versija 1.1")
+st.sidebar.markdown("Versija 1.2")
