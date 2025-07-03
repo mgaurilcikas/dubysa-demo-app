@@ -598,7 +598,7 @@ if page == "Duomenų įvestis":
         with col2:
             klase = st.selectbox(
                 "Klasė:",
-                [1, 2, 3, 4, 5, "5.see", 6, 7, 8, 9, 10], index=4  # Default to 5
+                [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], index=4  # Default to 5
             )
 
             klase_pasirengimas = st.selectbox(
