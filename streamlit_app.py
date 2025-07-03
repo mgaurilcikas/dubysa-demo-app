@@ -47,10 +47,7 @@ col_teminis_planas = ['Dalykas', 'Turinio sritis', 'Skyrius', 'Tema', 'Pasiekima
 
 
 
-activities_filter_promt = """Sukurk mokiniui skirtą pamokos planą, kuris:
-           tiksliai laikosi pamokos plano struktura nurodyta 'pamokos plano struktura',
-           remiasi mokymosi uždaviniu "Mokymosi uždavinys",
-           remiasi "veiklos stuktūra" turiniu ir apima jos pavadinimą"""
+activities_filter_promt = "Parink vieną veiklos struktūrą, kuri tinkamiausia pateiktam bendravimo įgudžiui lavinti"
 
 
 lesson_task_promt="""Sukurk mokiniui skirtą mokymosi uždavinį, kuris:
@@ -515,6 +512,9 @@ def generate_lesson_task(df: pd.DataFrame, promt: str) -> str:
         input=f"""{promt}. Argumentai: {df} """
     )
 
+
+
+    new = client.chat
     print(response.output_text)
     return response.output_text
 
@@ -598,7 +598,7 @@ if page == "Duomenų įvestis":
         with col2:
             klase = st.selectbox(
                 "Klasė:",
-                [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], index=4  # Default to 5
+                [1, 2, 3, 4, 5, "5.see", 6, 7, 8, 9, 10], index=4  # Default to 5
             )
 
             klase_pasirengimas = st.selectbox(
@@ -847,4 +847,4 @@ st.sidebar.write(f"Pamokos planas  {lesson_plan_state_icon}")
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("Versija 1.3")
-st.sidebar.markdown("Atnaujinta 2025.03.03, 10:05")
+st.sidebar.markdown("Atnaujinta 2025.07.03, 10:05")
