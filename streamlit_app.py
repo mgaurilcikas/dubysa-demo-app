@@ -38,16 +38,36 @@ ACTIVITIES_PATH = "data/veiklos_strukturos/visos_struktruros.json"
 LESSON_PLAN_STRUCTURE_PATH = "data/pamokos_plano_struktura/PP_struktura.csv"
 SOCIAL_SKILLS_PATH = "data/igudziai/bendravimo_igudziai.csv"
 
+
+col_bup_kompetencijos = ['Dalykas', 'Ugdoma kompetencija', 'Sritis', 'Aprasymas']
+col_bup_mokymosi_turinys = ['Dalykas', 'Turinio tema', 'Sritis-Tema', 'Mokimosi turinys']
+col_bup_pasiekimai = ['Dalykas', 'Pasiekimo sritis', 'Pasiekimų lygis', 'Pasiekimas', 'Aprasas']
+col_teminis_planas = ['Dalykas', 'Turinio sritis', 'Skyrius', 'Tema', 'Pasiekimas', 'Ugdoma kompetencija']
+
+
+
+
+activities_filter_promt = """Sukurk mokiniui skirtą pamokos planą, kuris:
+           tiksliai laikosi pamokos plano struktura nurodyta 'pamokos plano struktura',
+           remiasi mokymosi uždaviniu "Mokymosi uždavinys",
+           remiasi "veiklos stuktūra" turiniu ir apima jos pavadinimą"""
+
+
 lesson_task_promt="""Sukurk mokiniui skirtą mokymosi uždavinį, kuris:
             aprašo, ką turi pasiekti mokinys pamokos pabaigoje ir pagal kokius kriterijus yra vertinama sėkmė,
             remiasi bendrųjų programų 'pasiekimo sritimi' ir 'pasiekimų lygiu',
             remiasi teminiame plane nurodyta 'Tema' ir 'Ugdomais pasiekimais'.
-            Pateikt tik rezultatą, be apibendrinumų ir paaiškinimų kaip jis buvo pasiektas"""
+            remiasi parametru "Uždavinio formavimas", kuris nurodo ar užduotis turi būti altiekama individualiai ar grupėje
+            Rezultatas turi atitikti struktūrą 1.Sąlyga, 2. Atlikimas, 3. Kriterijus, be papildomų apibendrinumų ir paaiškinimų kaip jis buvo pasiektas"""
 
 lesson_plan_promt = """Sukurk mokiniui skirtą pamokos planą, kuris:
-            griežtai atitinka pamokos plano struktura nurodyta 'pamokos plano struktura',
-            remiasi mokymosi uždaviniu "Mokymosi uždavinys"""
-
+            tiksliai laikosi pamokos plano struktura nurodyta 'pamokos plano struktura',
+            remiasi mokymosi uždaviniu "Mokymosi uždavinys",
+            remiasi "veiklos stuktūra" turiniu ir apima jos pavadinimą. Sugeneruotame pamokos plano dalyje "VEIKLA", turi būti perkelti duomenys iš "Veiklos struktūra" skyriaus "Struktūros eiga", be jokių modifikacijų.
+            remiasi "ugdoma kompetencija".
+            remiasi "vadovėlio medžiaga"
+            Aprašydamas veiklą nurodyk, kas dirbs pamokoje, pagal parametrą „Pamokoje_dirbs“.
+            """
 
 if 'init_input_data' not in st.session_state:
     st.session_state.init_input_data = None
@@ -90,6 +110,9 @@ if 'pp_str' not in st.session_state:
 
 if 'skillz' not in st.session_state:
     st.session_state.skillz = ""
+
+if 'vadovelio_medziaga' not in st.session_state:
+    st.session_state.vadovelio_medziaga = ""
 
 # if "selected_topic" not in st.session_state:
 #     st.session_state.selected_topic = list(data.keys())[0]
@@ -483,6 +506,9 @@ def filter_data(df: pd.DataFrame, filters: dict) -> pd.DataFrame:
         # If the column does not exist, it is ignored
     return df
 
+def filter_df_columns(df: pd.DataFrame, col: list) -> pd.DataFrame:
+     return df[col]
+
 def generate_lesson_task(df: pd.DataFrame, promt: str) -> str:
     response = client.responses.create(
         model="gpt-4.1",
@@ -498,6 +524,32 @@ def generate_lesson_plan(df: pd.DataFrame, promt: str) -> str:
         input=f"""{promt}. Argumentai: {df} """
     )
     return response.output_text
+
+def df_to_json(name: str, df: pd.DataFrame, columns: list) -> dict:
+    """
+    Convert a pandas DataFrame to a JSON object with specified columns.
+
+    Args:
+        name (str): The key name for the JSON object
+        df (pd.DataFrame): The pandas DataFrame to process
+        columns (list): List of column names to filter
+
+    Returns:
+        dict: JSON object with the specified structure
+    """
+    # Filter the DataFrame to only include specified columns
+    filtered_df = df[columns]
+
+    # Convert each row to a dictionary with one key-value pair per dictionary
+    result_list = []
+    for _, row in filtered_df.iterrows():
+        for col in columns:
+            result_list.append({col: row[col]})
+
+    # Return the final JSON structure
+    return {name: result_list}
+
+
 
 # Sidebar navigation
 st.sidebar.title("📚 Pamokų planavimo sistema")
@@ -569,8 +621,8 @@ if page == "Duomenų įvestis":
         kompetencija = curiculum_data_full['Tema'].dropna().unique()
 
 
-        vad = st.text_input(
-            "Vadovėlio medžiaga", value=""
+        st.session_state.vadovelio_medziaga = st.text_area(
+            "Vadovėlio medžiaga", value="", height=100
         )
 
         filters_dict = {
@@ -579,7 +631,9 @@ if page == "Duomenų įvestis":
             'Mokslo metai': mokslo_metai,
             'Tema': tema,
             'Klasės pasirengimo lygis': klase_pasirengimas,
-            'Bendravimo įgūdis': igudis
+            'Bendravimo įgūdis': igudis,
+            'Uždavinio formavimas': uzdavinio_formavimas,
+            'Pamokoje dirbs': pamokoje_dirbs,
         }
 
         cur_data = filter_data(get_curriculum(HISTORY_CURRICULUM_PATH), filters_dict)
@@ -602,7 +656,7 @@ if page == "Duomenų įvestis":
                 st.session_state.bup_data1 = bup_data1
                 st.session_state.bup_data2 = bup_data2
                 st.session_state.bup_data3 = bup_data3
-                st.session_state.curiculum_data = cur_data
+                st.session_state.curiculum_data = filter_df_columns(cur_data, ["Dalykas", "Turinio sritis", "Tema"] )
                 st.session_state.activities_data = activities_data
                 st.session_state.lesson_plan_structure_data = lesson_plan_structure_data
                 st.session_state.skillz = skillz
@@ -621,8 +675,15 @@ if page == "Duomenų įvestis":
         activities_data = get_activities(ACTIVITIES_PATH)
         lesson_plan_structure_data = get_lesson_plan_structure(LESSON_PLAN_STRUCTURE_PATH)
         skills = get_social_skills(SOCIAL_SKILLS_PATH)
-
+        teacher_partnerships = pamokoje_dirbs
         teacher_input_state = True
+
+
+        # st.json(filters_dict)
+        # conv = df_to_json("Teminis planas", st.session_state.curiculum_data, ["Dalykas", "Turinio sritis", "Tema"])
+        # st.subheader("Teminis planas dict")
+        # st.json(df_to_json("BUP - Ugdomos kompetencijos", st.session_state.bup_data1, ["Dalykas", "Ugdoma kompetencija", "Sritis", "Aprasymas"] ))
+
 
         with st.expander("🔍 Peržiūrėti Teminio plano duomenis", expanded=False):
                 st.subheader("Teminis planas")
@@ -648,8 +709,11 @@ if page == "Duomenų įvestis":
             st.subheader("Bendravimo igudziai")
             st.dataframe(st.session_state.skillz, use_container_width=True)
 
-        with st.expander("🔍 Vadovelio medziaga", expanded=False):
-            st.markdown(vad)
+        with st.expander("🔍 Vadovėlio medžiaga", expanded=False):
+            if st.session_state.vadovelio_medziaga != "":
+                st.markdown(st.session_state.vadovelio_medziaga)
+            else:
+              st.markdown("Nėra")
 
         if st.button("🚀 Generuoti uždavinį", use_container_width=True) :
             with st.spinner("Generuojamas uždavinys..."):
@@ -658,7 +722,8 @@ if page == "Duomenų įvestis":
 
                 args_df = {
                     "Bendroji ugdymo programa": st.session_state.bup_df ,
-                    "Teminis planas": st.session_state.cur_df
+                    "Teminis planas": st.session_state.cur_df,
+                    'Uždavinio formavimas': uzdavinio_formavimas,
                 }
 
                 st.session_state.lesson_task = generate_lesson_task(args_df, lesson_task_promt)
@@ -667,32 +732,34 @@ if page == "Duomenų įvestis":
         if st.session_state.lesson_task:
 
                 with st.expander("🔍 Input data", expanded=False):
-                    st.subheader("Mokymosi uždavinys: Įeities duomenys")
-                    st.markdown(f"Promt: {lesson_task_promt}", unsafe_allow_html=True)
+                    st.subheader("Promt")
+                    st.markdown(lesson_task_promt, unsafe_allow_html=True)
+                    st.subheader("BUP - Pasiekimai pagal sritis")
                     st.dataframe(st.session_state.bup_df, use_container_width=True)
+                    st.subheader("Teminis planas")
                     st.dataframe(st.session_state.cur_df, use_container_width=True)
+                    st.markdown(f"**Uždavinio formavimas**: {uzdavinio_formavimas}", unsafe_allow_html=True)
 
                 with st.expander("🔍 Peržiūrėti mokymosi uždavinį", expanded=True):
                     st.subheader("Sugeneruotas Mokymosi uždavinys:")
                     st.markdown(st.session_state.lesson_task)
 
 
-
-
-
-
         if st.button("🚀 Generuoti pamokos planą", use_container_width=True) and st.session_state.lesson_task:
             with st.spinner("Generuojamas pamokos planas..."):
                 bup_df = filter_data(get_bup_achievements(BUP_ACHIEVEMENTS_BY_SUBJECT_PATH), filters_dict)
                 cur_df = filter_data(get_curriculum(HISTORY_CURRICULUM_PATH), filters_dict)
-                st.session_state.activities_data = filter_data(get_curriculum(HISTORY_CURRICULUM_PATH), filters_dict)
+                st.session_state.activities_data = filter_data(get_activities(ACTIVITIES_PATH), filters_dict)
 
 
                 args_df = {
                     "Pamokos plano struktura": lesson_plan_structure_data,
                     "Teminis planas": cur_df,
-                    "Mokymosi uzdavinys": uzd,
-                    "Veiklos struktura": st.session_state.activities_data
+                    "Mokymosi uzdavinys": st.session_state.lesson_task,
+                    "Veiklos struktura": st.session_state.activities_data,
+                    "Pamokoje dirbs": pamokoje_dirbs,
+                    "Vadovėlio medžiaga": st.session_state.vadovelio_medziaga,
+
                 }
 
                 st.session_state.pp_str =  generate_lesson_plan(args_df, lesson_plan_promt)
@@ -718,10 +785,18 @@ if page == "Duomenų įvestis":
 
 elif page == "Pamokos planas":
     if st.session_state.pp_str:
-        with st.expander("🔍 Įeities duomenys ", expanded=False):
-            st.markdown(f"Promt: {lesson_plan_promt}", unsafe_allow_html=True)
+        with st.expander("🔍 PP įeities duomenys ", expanded=False):
+            st.subheader("Promt")
+            st.markdown(lesson_plan_promt, unsafe_allow_html=True)
+            st.subheader("Veiklos struktura")
             st.dataframe(st.session_state.activities_data, use_container_width=True)
+
+            st.subheader("Mokymosi uždavinys")
             st.markdown(st.session_state.lesson_task)
+
+            st.subheader("Vadovėlio medžiaga")
+            st.markdown(st.session_state.vadovelio_medziaga)
+
 
         st.title("📖 **Pamokos Planas**")
         st.markdown(st.session_state.pp_str)
@@ -771,4 +846,5 @@ st.sidebar.write(f"Mokymosi uždavinys  {lesson_task_state_icon}")
 st.sidebar.write(f"Pamokos planas  {lesson_plan_state_icon}")
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("Versija 1.2")
+st.sidebar.markdown("Versija 1.3")
+st.sidebar.markdown("Atnaujinta 2025.03.03, 10:05")

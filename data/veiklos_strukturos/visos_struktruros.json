@@ -1,7 +1,7 @@
 {
   "activities": [
     {
-      "name": "Sakyk ir klausyk",
+      "Pavadinimas": "Sakyk ir klausyk",
       "Klasės pasirengimo lygis": "Žemas pasirengimo lygis",
       "paskirtis": "Ugdyti aktyvaus klausymosi, aiškaus minčių dėstymo, abipusio supratimo, empatijos ir pagarbos pašnekovui įgūdžius.",
       "trumpas_aprasymas": "Mokiniai dirba poromis. Vienas mokinys kalba duotą laiką tam tikra tema ar atsako į klausimą, kitas aktyviai klausosi. Po to klausytojas atpasakoja, ką išgirdo. Vėliau jie apsikeičia vaidmenimis.",
@@ -30,7 +30,7 @@
       ]
     },
     {
-      "name": "Kampai",
+      "Pavadinimas": "Kampai",
       "Klasės pasirengimo lygis": "Vidutinis pasirengimo lygis",
       "paskirtis": "Skatinti mokinius argumentuotai išreikšti nuomonę, išgirsti skirtingas pozicijas, ugdyti diskusijos kultūrą ir kritinį mąstymą.",
       "trumpas_aprasymas": "Kiekvienas klasės kampas žymi skirtingą atsakymą ar nuomonę. Mokiniai pasirenka kampą pagal savo nuomonę ir diskutuoja su grupės nariais.",
@@ -58,7 +58,7 @@
       ]
     },
     {
-      "name": "Piešinys",
+      "Pavadinimas": "Piešinys",
       "Klasės pasirengimo lygis": "Vidutinis pasirengimo lygis",
       "paskirtis": "Skatinti įsitraukimą, kūrybiškumą, idėjų generavimą, bendradarbiavimą ir alternatyvią raišką.",
       "trumpas_aprasymas": "Grupės kuria simbolinį ar vizualinį „piešinį“ tam tikra tema. Lapai keliauja tarp grupių, kurios papildo kūrinį.",
